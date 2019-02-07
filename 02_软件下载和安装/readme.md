@@ -13,3 +13,8 @@ http://www.wenhua.com.cn/
 
 http://wh6.wenhua.com.cn/Download/index?flag=1
 
+
+MultiCharts  （MC 中文版）
+
+https://www.multicharts.cn/
+
