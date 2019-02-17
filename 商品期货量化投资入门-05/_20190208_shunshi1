@@ -9,7 +9,7 @@ mp = marketposition ;
 
 vars:ltt(1);
 
-inputs:yuanshi_zijin(2),ganggan(2.5),multi(1);
+inputs:yuanshi_zijin(20),ganggan(2.5),multi(1);
 
 ltt = multi * maxlist(1,IntPortion(yuanshi_zijin*10000*ganggan/(close*bigpointvalue))) ;
 
