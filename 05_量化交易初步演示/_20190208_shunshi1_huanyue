@@ -1,0 +1,93 @@
+
+//自动换月
+
+
+Input:	ATRlen( 20 ), Flen( 20 ) ;// Slen( 55 ) ;
+var: Myfhigh( 0 ), Myflow( 0 ), Myshigh( 0 ), Myslow( 0 ), mp( 0 ), Myatr( 0 );
+
+
+mp = marketposition ;
+
+
+vars:ltt(1);
+
+inputs:yuanshi_zijin(20),ganggan(2.5),multi(1);
+
+ltt = multi * maxlist(1,IntPortion(yuanshi_zijin*10000*ganggan/(close*bigpointvalue))) ;
+
+
+//ma
+
+
+vars:ma30(0),ma50(0);
+
+//ma30 = XAverage( Close, 30 ) ;
+
+//ma50 = AverageFC( Close, 50 ) ;
+
+
+
+//entry&add
+if mp = 0 then 
+begin
+	Myfhigh = Highest( high , 20 ) ;
+	Myflow = Lowest( low , 20 ) ;
+
+	//if ma30>ma50 then
+	buy ltt shares next bar at Myfhigh stop ;
+	
+	//if ma30<ma50 then
+	sellshort ltt shares next bar at Myflow stop ;
+	
+	
+	
+end ;
+
+
+
+if mp <> 0 and mp[1] = 0 then Myatr = AvgTrueRange(ATRlen) ;
+
+
+//stop
+if currentcontracts = ltt then
+begin
+	if mp = 1 then sell ("duo---") all shares next bar at PosTradeEntryPrice(0,0) - 3 * Myatr stop ;
+	if mp = -1 then buytocover ("kong---") all shares next bar at PosTradeEntryPrice(0,0) + 3 * Myatr stop ;
+end ;
+
+
+//cover
+if mp = 1 then sell ("sell-out") all shares next bar at Lowest(low,10) stop ;
+if mp = -1 then buytocover ("buy-out") all shares next bar at Highest(high,10) stop ;
+
+
+
+
+
+//GetHotSymbol RemainDate
+var:vHotSymbol(""),vNextDay_HotSymbol("");
+
+if Instr(symbol,"HOT")<>0 and getappinfo(aiStrategyAuto)=0 then begin 
+	vHotSymbol=GetHotChange(symbol,date,time_s);
+	vNextDay_HotSymbol=GetHotChange(symbol,calcdate(date,1),time_s);
+	//print(date)
+end;
+
+condition1=vHotSymbol<>vNextDay_HotSymbol;
+
+if condition1 then begin
+	if marketposition>0 then begin
+		sell ("HY1---") this bar at close;
+		//print(date, " huanyue ",symbol);
+		
+		//buy("Recover") currentcontracts contract next bar at market;
+	end;
+	if marketposition<0 then begin
+		//print(date, " huanyue ",symbol);
+		buytocover ("HY2---") this bar at close;
+		//sellshort("Recover") currentcontracts contract next bar at market;
+	end;
+end; 
+
+
+
